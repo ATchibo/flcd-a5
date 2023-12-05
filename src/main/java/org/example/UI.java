@@ -7,9 +7,13 @@ public class UI {
 
 //    src/main/resources/g1.txt
 //    src/main/resources/g2.txt
-    private Grammar g;
+    private Grammar grammar;
 
-    public UI() {}
+    public UI() throws FileNotFoundException {
+        grammar = new Grammar("src/main/resources/g1.txt");
+        grammar.readGrammarFromFile();
+        System.out.println("g1.txt loaded by default");
+    }
 
     public void run() {
 
@@ -30,34 +34,36 @@ public class UI {
                 case 0:
                     return;
                 case 1:
+                    System.out.println("Enter file path:");
                     String filePath = scanner.next();
-                    g = new Grammar(filePath);
+                    grammar = new Grammar(filePath);
 
                     try {
-                        g.readGrammarFromFile();
+                        grammar.readGrammarFromFile();
+                        System.out.println("File read successfully");
                     } catch (FileNotFoundException e) {
                         System.out.println("File not found");
                     }
                     break;
                 case 2:
-                    System.out.println(g);
+                    System.out.println(grammar);
                     break;
                 case 3:
-                    System.out.println(g.getTerminals());
+                    System.out.println(grammar.getTerminals());
                     break;
                 case 4:
-                    System.out.println(g.getNonTerminals());
+                    System.out.println(grammar.getNonTerminals());
                     break;
                 case 5:
-                    System.out.println(g.getProductions());
+                    System.out.println(grammar.getProductions());
                     break;
                 case 6:
                     System.out.println("Enter non-terminal: ");
                     String nonTerminal = scanner.next();
-                    System.out.println(g.getProductionsOfNonTerminal(nonTerminal));
+                    System.out.println(grammar.getProductionsOfNonTerminal(nonTerminal));
                     break;
                 case 7:
-                    System.out.println(g.isLL1());
+                    System.out.println(grammar.isContextFreeGrammar());
                     break;
                 default:
                     System.out.println("Invalid command");

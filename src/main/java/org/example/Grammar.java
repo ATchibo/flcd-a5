@@ -88,8 +88,10 @@ public class Grammar {
     }
 
 
-    public boolean isLL1() {
-        return true;
+    public boolean isContextFreeGrammar() {
+        return productions.stream()
+                .map(Production::getSourceNonTerminal)
+                .noneMatch(nonterminal -> nonterminal.getName().length() > 1);
     }
 
     public List<Terminal> getFirst(NonTerminal nonTerminal) {
