@@ -21,7 +21,7 @@ public class UI {
             System.out.println("4. Print non-terminals");
             System.out.println("5. Print productions");
             System.out.println("6. Print productions of a given non-terminal");
-            System.out.println("7. Check if grammar is LL(1)");
+            System.out.println("7. Check if grammar is CFG");
 
             Scanner scanner = new Scanner(System.in);
             int command = scanner.nextInt();
