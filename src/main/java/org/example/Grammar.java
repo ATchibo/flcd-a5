@@ -75,6 +75,22 @@ public class Grammar {
         }
     }
 
+    public List<Production> getProductionsOfNonTerminal(String nonTerminal) {
+        List<Production> result = new ArrayList<>();
+
+        for (Production p: productions)
+            if (p.getSourceNonTerminal().equals(nonTerminal))
+                result.add(p);
+
+        return result;
+    }
+
+    public boolean isLL1() {
+        return true;
+    }
+
+
+
     public Set<NonTerminal> getNonTerminals() {
         return this.nonTerminals;
     }
