@@ -1,0 +1,123 @@
+program decllist declaration IDENTIFIER_LIST type1 letter digit nonzerodigit arraydecl type cmpdstmt stmtlist stmt simplstmt assignstmt expression term factor iostmt structstmt epsilon ifstmt whilestmt condition RELATION 
++ - * / =: < <= = > >= += -= ++ -- *= /= && || & | << >> <<= >>= ~ ! != [] : , () ' char int string const do while if else end read print def ret main for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
+program
+program -> decllist
+program -> cmpdstmt
+program -> decllist program
+program -> cmpdstmt program
+program -> epsilon
+decllist -> declaration 
+decllist ->  declaration newline decllist
+declaration -> type IDENTIFIER_LIST
+IDENTIFIER_LIST -> IDENTIFIER
+IDENTIFIER_LIST -> IDENTIFIER , IDENTIFIER_LIST
+type1 -> bool 
+type1 ->  char 
+type1 ->  int 
+type1 ->  float 
+type1 ->  string
+arraydecl -> type1 [ nr ]
+type -> type1
+type -> arraydecl
+cmpdstmt -> : stmtlist end
+stmtlist -> stmt 
+stmtlist ->  stmt newline stmtlist
+stmt -> simplstmt 
+stmt ->  structstmt
+simplstmt -> assignstmt 
+simplstmt ->  iostmt
+assignstmt -> IDENTIFIER = expression
+expression -> expression + term 
+expression ->  term
+term -> term * factor 
+term ->  factor
+factor -> ( expression ) 
+factor ->  IDENTIFIER
+iostmt -> read 
+iostmt ->  print ( IDENTIFIER )
+structstmt -> cmpdstmt 
+structstmt ->  ifstmt 
+structstmt ->  whilestmt
+ifstmt -> if[ condition ]: stmt
+ifstmt -> else stmt
+ifstmt -> else ifstmt  end
+whilestmt -> while[ condition ]: stmt end
+condition -> expression RELATION expression
+RELATION -> < 
+RELATION ->  <= 
+RELATION ->  == 
+RELATION ->  != 
+RELATION ->  >= 
+RELATION ->  >
+letter -> A
+letter -> B
+letter -> C
+letter -> D
+letter -> E
+letter -> F
+letter -> G
+letter -> H
+letter -> I
+letter -> J
+letter -> K
+letter -> L
+letter -> M
+letter -> N
+letter -> O
+letter -> P
+letter -> Q
+letter -> R
+letter -> S
+letter -> T
+letter -> U
+letter -> V
+letter -> W
+letter -> X
+letter -> Y
+letter -> Z
+letter -> a
+letter -> b
+letter -> c
+letter -> d
+letter -> e
+letter -> f
+letter -> g
+letter -> h
+letter -> i
+letter -> j
+letter -> k
+letter -> l
+letter -> m
+letter -> n
+letter -> o
+letter -> p
+letter -> q
+letter -> r
+letter -> s
+letter -> t
+letter -> u
+letter -> v
+letter -> w
+letter -> x
+letter -> y
+letter -> z
+digit -> 0
+digit -> 1
+digit -> 2
+digit -> 3
+digit -> 4
+digit -> 5
+digit -> 6
+digit -> 7
+digit -> 8
+digit -> 9
+nonzerodigit -> 1
+nonzerodigit -> 2
+nonzerodigit -> 3
+nonzerodigit -> 4
+nonzerodigit -> 5
+nonzerodigit -> 6
+nonzerodigit -> 7
+nonzerodigit -> 8
+nonzerodigit -> 9
+
