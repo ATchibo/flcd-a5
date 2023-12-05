@@ -25,6 +25,8 @@ public class Grammar {
     private List<Production> productions;
 
 
+    private final Terminal EPSILON = new Terminal("ε");
+
     public Grammar(String filePath) {
         this.filePath = filePath;
 
@@ -85,10 +87,22 @@ public class Grammar {
         return result;
     }
 
+
     public boolean isLL1() {
         return true;
     }
 
+    public List<Terminal> getFirst(NonTerminal nonTerminal) {
+        List<Terminal> result = new ArrayList<>();
+
+        return result;
+    }
+
+    public List<Terminal> getFollow(NonTerminal nonTerminal) {
+        List<Terminal> result = new ArrayList<>();
+
+        return result;
+    }
 
 
     public Set<NonTerminal> getNonTerminals() {
