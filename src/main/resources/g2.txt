@@ -1,54 +1,54 @@
-program decllist declaration IDENTIFIER_LIST type1 letter digit nonzerodigit arraydecl type cmpdstmt stmtlist stmt simplstmt assignstmt expression term factor iostmt structstmt epsilon ifstmt whilestmt condition RELATION 
+program declarationList declaration identifierList primitiveType letter digit nonZeroDigit arrayDeclaration type compoundStatement statementList statement simpleStatement assignStatement expression term factor inputOutputStatement structureStatement epsilon ifStatement whileStatement condition relation 
 + - * / =: < <= = > >= += -= ++ -- *= /= && || & | << >> <<= >>= ~ ! != [] : , () ' char int string const do while if else end read print def ret main for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
 program
-program -> decllist
-program -> cmpdstmt
-program -> decllist program
-program -> cmpdstmt program
+program -> declarationList
+program -> compoundStatement
+program -> declarationList program
+program -> compoundStatement program
 program -> epsilon
-decllist -> declaration 
-decllist ->  declaration newline decllist
-declaration -> type IDENTIFIER_LIST
-IDENTIFIER_LIST -> IDENTIFIER
-IDENTIFIER_LIST -> IDENTIFIER , IDENTIFIER_LIST
-type1 -> bool 
-type1 ->  char 
-type1 ->  int 
-type1 ->  float 
-type1 ->  string
-arraydecl -> type1 [ nr ]
-type -> type1
-type -> arraydecl
-cmpdstmt -> : stmtlist end
-stmtlist -> stmt 
-stmtlist ->  stmt newline stmtlist
-stmt -> simplstmt 
-stmt ->  structstmt
-simplstmt -> assignstmt 
-simplstmt ->  iostmt
-assignstmt -> IDENTIFIER = expression
+declarationList -> declaration 
+declarationList ->  declaration newline declarationList
+declaration -> type identifierList
+identifierList -> identifier
+identifierList -> identifier , identifierList
+primitiveType -> bool 
+primitiveType ->  char 
+primitiveType ->  int 
+primitiveType ->  float 
+primitiveType ->  string
+arrayDeclaration -> primitiveType [ nr ]
+type -> primitiveType
+type -> arrayDeclaration
+compoundStatement -> : statementList end
+statementList -> statement 
+statementList ->  statement newline statementList
+statement -> simpleStatement 
+statement ->  structureStatement
+simpleStatement -> assignStatement 
+simpleStatement ->  inputOutputStatement
+assignStatement -> identifier = expression
 expression -> expression + term 
 expression ->  term
 term -> term * factor 
 term ->  factor
 factor -> ( expression ) 
-factor ->  IDENTIFIER
-iostmt -> read 
-iostmt ->  print ( IDENTIFIER )
-structstmt -> cmpdstmt 
-structstmt ->  ifstmt 
-structstmt ->  whilestmt
-ifstmt -> if[ condition ]: stmt
-ifstmt -> else stmt
-ifstmt -> else ifstmt  end
-whilestmt -> while[ condition ]: stmt end
-condition -> expression RELATION expression
-RELATION -> < 
-RELATION ->  <= 
-RELATION ->  == 
-RELATION ->  != 
-RELATION ->  >= 
-RELATION ->  >
+factor ->  identifier
+inputOutputStatement -> read 
+inputOutputStatement ->  print ( identifier )
+structureStatement -> compoundStatement 
+structureStatement ->  ifStatement 
+structureStatement ->  whileStatement
+ifStatement -> if[ condition ]: statement
+ifStatement -> else statement
+ifStatement -> else ifStatement  end
+whileStatement -> while[ condition ]: statement end
+condition -> expression relation expression
+relation -> < 
+relation ->  <= 
+relation ->  == 
+relation ->  != 
+relation ->  >= 
+relation ->  >
 letter -> A
 letter -> B
 letter -> C
@@ -111,13 +111,13 @@ digit -> 6
 digit -> 7
 digit -> 8
 digit -> 9
-nonzerodigit -> 1
-nonzerodigit -> 2
-nonzerodigit -> 3
-nonzerodigit -> 4
-nonzerodigit -> 5
-nonzerodigit -> 6
-nonzerodigit -> 7
-nonzerodigit -> 8
-nonzerodigit -> 9
+nonZeroDigit -> 1
+nonZeroDigit -> 2
+nonZeroDigit -> 3
+nonZeroDigit -> 4
+nonZeroDigit -> 5
+nonZeroDigit -> 6
+nonZeroDigit -> 7
+nonZeroDigit -> 8
+nonZeroDigit -> 9
 
