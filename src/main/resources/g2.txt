@@ -1,5 +1,5 @@
-program declarationList declaration identifierList identifier letter digit nonZeroDigit arrayDeclaration primitiveType type positiveNumber statementList statement assignStatement expression term factor inputOutputStatement conditionalStructStatement epsilon ifSimpleStatement elseStatementChain ifStatement whileStatement condition relation 
-+ - * / =: < <= = > >= += -= *= /= && || ! != [] : , () ' char int string while if else end read print def ret main for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
+program declarationList declaration identifierList primitiveType arrayDeclaration type statement assignStatement inputOutputStatement conditionalStructStatement ifSimpleStatement ifStatement elseStatementChain whileStatement condition conditionList relation expressionNumber expression mathExpression arithmeticOperator booleanOperator identifierStart identifierContent identifier letter digit nonZeroDigit
++ - * / =: < <= = > >= && || ! != [] : , () ' char int string while if else end read print def ret for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
 program -> statement program
 program -> epsilon
 declarationList ->  declaration declarationList
@@ -21,16 +21,17 @@ statement -> assignStatement
 statement -> inputOutputStatement
 assignStatement -> identifier = expression
 inputOutputStatement -> read 
-inputOutputStatement ->  print ( identifier )
+inputOutputStatement ->  print ( expression )
 conditionalStructStatement ->  ifStatement 
 conditionalStructStatement ->  whileStatement
 ifSimpleStatement -> if [ condition ] : statement
-ifStatement -> ifSimpleStatement elseStatementChain
+ifStatement -> ifSimpleStatement elseStatementChain end
 elseStatementChain -> else statement elseStatementChain
 elseStatementChain -> epsilon
 whileStatement -> while [ condition ] : statement end
 condition -> expression relation expression
 condition -> ( expression relation expression )
+condition -> ! condition
 conditionList -> condition booleanOperator conditionList
 conditionList -> epsilon
 relation -> < 
@@ -39,9 +40,27 @@ relation ->  ==
 relation ->  != 
 relation ->  >= 
 relation ->  >
-expression -> identifier
-expression -> number
+expressionNumber -> identifier
+expressionNumber -> number
+expression -> expressionNumber
 expression -> stringTerminal
+expression -> mathExpression
+mathExpression -> expressionNumber
+mathExpression -> mathExpression arithmeticOperator mathExpression
+mathExpression -> ( mathExpression arithmeticOperator mathExpression )
+arithmeticOperator -> +
+arithmeticOperator -> -
+arithmeticOperator -> *
+arithmeticOperator -> /
+booleanOperator -> &&
+booleanOperator -> ||
+identifierStart -> letter
+identifierStart -> _
+identifierContent -> letter identifierContent
+identifierContent -> digit identifierContent
+identifierContent -> _ identifierContent
+identifierContent -> epsilon
+identifier -> identifierStart identifierContent
 letter -> A
 letter -> B
 letter -> C
