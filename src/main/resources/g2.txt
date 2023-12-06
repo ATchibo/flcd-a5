@@ -11,7 +11,7 @@ primitiveType -> bool
 primitiveType -> char 
 primitiveType -> int 
 primitiveType -> float 
-primitiveType ->  tring
+primitiveType -> string
 arrayDeclaration -> primitiveType [ positiveNumber ]
 type -> primitiveType
 type -> arrayDeclaration
