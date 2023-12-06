@@ -1,54 +1,47 @@
-program declarationList declaration identifierList primitiveType letter digit nonZeroDigit arrayDeclaration type compoundStatement statementList statement simpleStatement assignStatement expression term factor inputOutputStatement structureStatement epsilon ifStatement whileStatement condition relation 
-+ - * / =: < <= = > >= += -= ++ -- *= /= && || & | << >> <<= >>= ~ ! != [] : , () ' char int string const do while if else end read print def ret main for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
-program
-program -> declarationList
-program -> compoundStatement
-program -> declarationList program
-program -> compoundStatement program
+program declarationList declaration identifierList identifier letter digit nonZeroDigit arrayDeclaration primitiveType type positiveNumber statementList statement assignStatement expression term factor inputOutputStatement conditionalStructStatement epsilon ifSimpleStatement elseStatementChain ifStatement whileStatement condition relation 
++ - * / =: < <= = > >= += -= *= /= && || ! != [] : , () ' char int string while if else end read print def ret main for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
+program -> statement program
 program -> epsilon
-declarationList -> declaration 
-declarationList ->  declaration newline declarationList
+declarationList ->  declaration declarationList
+declarationList -> epsilon 
 declaration -> type identifierList
 identifierList -> identifier
 identifierList -> identifier , identifierList
 primitiveType -> bool 
-primitiveType ->  char 
-primitiveType ->  int 
-primitiveType ->  float 
-primitiveType ->  string
-arrayDeclaration -> primitiveType [ nr ]
+primitiveType -> char 
+primitiveType -> int 
+primitiveType -> float 
+primitiveType ->  tring
+arrayDeclaration -> primitiveType [ positiveNumber ]
 type -> primitiveType
 type -> arrayDeclaration
-compoundStatement -> : statementList end
-statementList -> statement 
-statementList ->  statement newline statementList
-statement -> simpleStatement 
-statement ->  structureStatement
-simpleStatement -> assignStatement 
-simpleStatement ->  inputOutputStatement
+statement -> declarationList
+statement -> conditionalStructStatement
+statement -> assignStatement 
+statement -> inputOutputStatement
 assignStatement -> identifier = expression
-expression -> expression + term 
-expression ->  term
-term -> term * factor 
-term ->  factor
-factor -> ( expression ) 
-factor ->  identifier
 inputOutputStatement -> read 
 inputOutputStatement ->  print ( identifier )
-structureStatement -> compoundStatement 
-structureStatement ->  ifStatement 
-structureStatement ->  whileStatement
-ifStatement -> if[ condition ]: statement
-ifStatement -> else statement
-ifStatement -> else ifStatement  end
-whileStatement -> while[ condition ]: statement end
+conditionalStructStatement ->  ifStatement 
+conditionalStructStatement ->  whileStatement
+ifSimpleStatement -> if [ condition ] : statement
+ifStatement -> ifSimpleStatement elseStatementChain
+elseStatementChain -> else statement elseStatementChain
+elseStatementChain -> epsilon
+whileStatement -> while [ condition ] : statement end
 condition -> expression relation expression
+condition -> ( expression relation expression )
+conditionList -> condition booleanOperator conditionList
+conditionList -> epsilon
 relation -> < 
 relation ->  <= 
 relation ->  == 
 relation ->  != 
 relation ->  >= 
 relation ->  >
+expression -> identifier
+expression -> number
+expression -> stringTerminal
 letter -> A
 letter -> B
 letter -> C
