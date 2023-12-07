@@ -10,7 +10,7 @@ public class UI {
     private Grammar grammar;
 
     public UI() throws FileNotFoundException {
-        grammar = new Grammar("src/main/resources/g1.txt");
+        grammar = new Grammar("g1.txt");
         grammar.readGrammarFromFile();
         System.out.println("g1.txt loaded by default");
     }
@@ -34,9 +34,9 @@ public class UI {
                 case 0:
                     return;
                 case 1:
-                    System.out.println("Enter file path:");
-                    String filePath = scanner.next();
-                    grammar = new Grammar(filePath);
+                    System.out.println("Enter file name:");
+                    String fileName = scanner.next();
+                    grammar = new Grammar(fileName);
 
                     try {
                         grammar.readGrammarFromFile();

@@ -27,8 +27,8 @@ public class Grammar {
 
     private final Terminal EPSILON = new Terminal("ε");
 
-    public Grammar(String filePath) {
-        this.filePath = filePath;
+    public Grammar(String fileName) {
+        this.filePath = "src/main/resources/" + fileName;
 
         this.nonTerminals = new HashSet<>();
         this.terminals = new HashSet<>();

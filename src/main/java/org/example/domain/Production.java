@@ -30,7 +30,7 @@ public class Production {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (Term t: resultingTerms)
+        for (NonTerminal t: sourceNonTerminals)
             sb.append(t).append(" ");
         sb.append("-> ");
         for (Term t: resultingTerms)
