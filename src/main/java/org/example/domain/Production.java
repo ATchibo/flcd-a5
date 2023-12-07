@@ -5,21 +5,21 @@ import java.util.List;
 
 public class Production {
 
-    private NonTerminal sourceNonTerminal;
+    private List<NonTerminal> sourceNonTerminals;
     private List<Term> resultingTerms;
 
-    public Production(NonTerminal sourceNonTerminal) {
-        this.sourceNonTerminal = sourceNonTerminal;
-        resultingTerms = new ArrayList<>();
+    public Production() {
+        this.sourceNonTerminals = new ArrayList<>();
+        this.resultingTerms = new ArrayList<>();
     }
 
-    public Production(NonTerminal sourceNonTerminal, List<Term> terms) {
-        this.sourceNonTerminal = sourceNonTerminal;
+    public Production(List<NonTerminal> sourceNonTerminals, List<Term> terms) {
+        this.sourceNonTerminals = sourceNonTerminals;
         this.resultingTerms = terms;
     }
 
-    public NonTerminal getSourceNonTerminal() {
-        return sourceNonTerminal;
+    public List<NonTerminal> getSourceNonTerminals() {
+        return sourceNonTerminals;
     }
 
     public List<Term> getResultingTerms() {
@@ -30,9 +30,11 @@ public class Production {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(sourceNonTerminal).append(" -> ");
         for (Term t: resultingTerms)
-            sb.append(t);
+            sb.append(t).append(" ");
+        sb.append("-> ");
+        for (Term t: resultingTerms)
+            sb.append(t).append(" ");
 
         return sb.toString();
     }
