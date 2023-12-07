@@ -59,16 +59,22 @@ public class Grammar {
             line = reader.readLine();
 
             while (line != null) {
-                String[] production = line.split(" ");
-                NonTerminal sourceNonTerminal = new NonTerminal(production[0]);
+                String[] production = line.split(" -> ");
+                String[] sourceNonTerminals = production[0].split(" ");
 
-                List<Term> resultingTerms = new ArrayList<>();
-                for (int i = 2; i < production.length; i++)
-                    if (Arrays.asList(nonTerminals).contains(production[i]))
-                        resultingTerms.add(new NonTerminal(production[i]));
-                    else resultingTerms.add(new Terminal(production[i]));
+                List<NonTerminal> sourceNonTerminalsList = new ArrayList<>();
+                for (String sourceNonTerminal: sourceNonTerminals)
+                    sourceNonTerminalsList.add(new NonTerminal(sourceNonTerminal));
 
-                this.productions.add(new Production(sourceNonTerminal, resultingTerms));
+                String[] resultingTerms = production[1].split(" ");
+                List<Term> resultingTermsList = new ArrayList<>();
+
+                for (String resultingTerm: resultingTerms)
+                    if (Arrays.asList(nonTerminals).contains(resultingTerm))
+                        resultingTermsList.add(new NonTerminal(resultingTerm));
+                    else resultingTermsList.add(new Terminal(resultingTerm));
+
+                this.productions.add(new Production(sourceNonTerminalsList, resultingTermsList));
 
                 line = reader.readLine();
             }
@@ -80,9 +86,13 @@ public class Grammar {
     public List<Production> getProductionsOfNonTerminal(String nonTerminal) {
         List<Production> result = new ArrayList<>();
 
-        for (Production p: productions)
-            if (p.getSourceNonTerminal().equals(nonTerminal))
+        for (Production p: productions) {
+            if (p.getSourceNonTerminals().size() != 1)
+                continue;
+
+            if (p.getSourceNonTerminals().get(0).getName().equals(nonTerminal))
                 result.add(p);
+        }
 
         return result;
     }
@@ -90,8 +100,8 @@ public class Grammar {
 
     public boolean isContextFreeGrammar() {
         return productions.stream()
-                .map(Production::getSourceNonTerminal)
-                .noneMatch(nonterminal -> nonterminal.getName().length() > 1);
+                .map(Production::getSourceNonTerminals)
+                .allMatch(nonterminals -> nonterminals.size() == 1);
     }
 
     public List<Terminal> getFirst(NonTerminal nonTerminal) {
