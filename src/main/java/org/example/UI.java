@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class UI {
@@ -11,8 +12,12 @@ public class UI {
 
     public UI() throws FileNotFoundException {
         grammar = new Grammar("g1.txt");
-        grammar.readGrammarFromFile();
-        System.out.println("g1.txt loaded by default");
+        try {
+            grammar.readGrammarFromFile();
+            System.out.println("g1.txt loaded by default");
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
     }
 
     public void run() {
@@ -43,6 +48,8 @@ public class UI {
                         System.out.println("File read successfully");
                     } catch (FileNotFoundException e) {
                         System.out.println("File not found");
+                    } catch (Exception e) {
+                        System.out.println("Error reading file: " + e.getMessage());
                     }
                     break;
                 case 2:

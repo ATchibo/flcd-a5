@@ -30,4 +30,9 @@ public abstract class Term {
 
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 }

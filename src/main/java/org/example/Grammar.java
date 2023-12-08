@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,51 +36,53 @@ public class Grammar {
         this.productions = new ArrayList<>();
     }
 
-    public void readGrammarFromFile() throws FileNotFoundException {
+    public void readGrammarFromFile() throws IOException {
         File file = new File(filePath);
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
-        try {
-            String line = reader.readLine();
+        String line = reader.readLine();
 
-            String[] nonTerminals = line.split(" ");
-            for (String nonTerminal: nonTerminals)
-                this.nonTerminals.add(new NonTerminal(nonTerminal));
+        String[] nonTerminals = line.split(" ");
+        for (String nonTerminal: nonTerminals)
+            this.nonTerminals.add(new NonTerminal(nonTerminal));
 
-            line = reader.readLine();
+        line = reader.readLine();
 
-            String[] terminals = line.split(" ");
-            for (String terminal: terminals)
-                this.terminals.add(new Terminal(terminal));
+        String[] terminals = line.split(" ");
+        for (String terminal: terminals)
+            this.terminals.add(new Terminal(terminal));
 
-            line = reader.readLine();
+        line = reader.readLine();
 
-            this.startingSymbol = new NonTerminal(line);
+        this.startingSymbol = new NonTerminal(line);
 
-            line = reader.readLine();
+        line = reader.readLine();
 
-            while (line != null) {
-                String[] production = line.split(" -> ");
-                String[] sourceNonTerminals = production[0].split(" ");
+        while (line != null) {
+            String[] production = line.split(" -> ");
+            String[] sourceNonTerminals = production[0].split(" ");
 
-                List<NonTerminal> sourceNonTerminalsList = new ArrayList<>();
-                for (String sourceNonTerminal: sourceNonTerminals)
-                    sourceNonTerminalsList.add(new NonTerminal(sourceNonTerminal));
-
-                String[] resultingTerms = production[1].split(" ");
-                List<Term> resultingTermsList = new ArrayList<>();
-
-                for (String resultingTerm: resultingTerms)
-                    if (Arrays.asList(nonTerminals).contains(resultingTerm))
-                        resultingTermsList.add(new NonTerminal(resultingTerm));
-                    else resultingTermsList.add(new Terminal(resultingTerm));
-
-                this.productions.add(new Production(sourceNonTerminalsList, resultingTermsList));
-
-                line = reader.readLine();
+            List<NonTerminal> sourceNonTerminalsList = new ArrayList<>();
+            for (String sourceNonTerminal: sourceNonTerminals) {
+                NonTerminal t = new NonTerminal(sourceNonTerminal);
+                if (!this.nonTerminals.contains(t))
+                    throw new RuntimeException("Invalid grammar: non-terminal " + t + " not found");
+                sourceNonTerminalsList.add(t);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            String[] resultingTerms = production[1].split(" ");
+            List<Term> resultingTermsList = new ArrayList<>();
+
+            for (String resultingTerm: resultingTerms)
+                if (Arrays.asList(nonTerminals).contains(resultingTerm))
+                    resultingTermsList.add(new NonTerminal(resultingTerm));
+                else if (Arrays.asList(terminals).contains(resultingTerm))
+                    resultingTermsList.add(new Terminal(resultingTerm));
+                else throw new RuntimeException("Invalid grammar: term " + resultingTerm + " not found");
+
+            this.productions.add(new Production(sourceNonTerminalsList, resultingTermsList));
+
+            line = reader.readLine();
         }
     }
 
