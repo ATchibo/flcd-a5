@@ -116,8 +116,42 @@ public class Grammar {
                 .allMatch(nonterminals -> nonterminals.size() == 1);
     }
 
-    public List<Terminal> getFirst(NonTerminal nonTerminal) {
-        List<Terminal> result = new ArrayList<>();
+    // should be used only for cfg grammars
+    public Set<Terminal> getFirst(Term term) {
+        Set<Terminal> result = new HashSet<>();
+
+        if (term instanceof Terminal) {
+            result.add((Terminal)term);
+        }
+        else if (term instanceof NonTerminal) {
+            List<Production> productions = getProductionsOfNonTerminal(term.getName());
+            for (Production production : productions) {
+                List<Term> resultingTerms = production.getResultingTerms();
+                if (resultingTerms.size() == 1 && resultingTerms.getFirst().equals(EPSILON)) {
+                    result.add(EPSILON);
+                }
+                else {
+                    for (Term resultingTerm : resultingTerms) {
+                        Set<Terminal> localResult = getFirst(resultingTerm);
+                        if (!localResult.contains(EPSILON)) {
+                            result.addAll(localResult);
+                            break;
+                        }
+                        else {
+                            result.remove(EPSILON);
+                            result.addAll(localResult);
+                        }
+                    }
+
+                    if (result.isEmpty()) {
+                        result.add(EPSILON);
+                    }
+                }
+            }
+        }
+        else {
+            throw new RuntimeException("getFirst accepts Terminal or NonTerminal classes only");
+        }
 
         return result;
     }
