@@ -100,6 +100,15 @@ public class Grammar {
         return result;
     }
 
+    public NonTerminal getNonTerminalFromString(String nonTerminalName) {
+        for (NonTerminal nonTerminal : nonTerminals) {
+            if (nonTerminal.getName().equals(nonTerminalName)) {
+                return nonTerminal;
+            }
+        }
+        return null;
+    }
+
 
     public boolean isContextFreeGrammar() {
         return productions.stream()
