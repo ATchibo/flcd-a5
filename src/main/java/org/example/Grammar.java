@@ -140,7 +140,7 @@ public class Grammar {
                             break;
                         }
                         else {
-                            result.remove(EPSILON);
+                            localResult.remove(EPSILON);
                             result.addAll(localResult);
                         }
                     }
