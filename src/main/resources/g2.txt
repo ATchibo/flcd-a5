@@ -2,9 +2,9 @@ program declarationList declaration identifierList primitiveType arrayDeclaratio
 + - * / =: < <= = > >= && || ! != [] : , ( ) ' int string while if else end read print def ret for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
 program
 program -> statement program
-program -> epsilon
+program -> ε
 declarationList -> declaration declarationList
-declarationList -> epsilon 
+declarationList -> ε 
 declaration -> type identifierList
 identifierList -> identifier
 identifierList -> identifier , identifierList
@@ -28,13 +28,13 @@ conditionalStructStatement -> whileStatement
 ifSimpleStatement -> if [ condition ] : statement
 ifStatement -> ifSimpleStatement elseStatementChain end
 elseStatementChain -> else statement elseStatementChain
-elseStatementChain -> epsilon
+elseStatementChain -> ε
 whileStatement -> while [ condition ] : statement end
 condition -> expression relation expression
 condition -> ( expression relation expression )
 condition -> ! condition
 conditionList -> condition booleanOperator conditionList
-conditionList -> epsilon
+conditionList -> ε
 relation -> < 
 relation -> <=
 relation -> ==
@@ -60,10 +60,10 @@ identifierStart -> _
 identifierContent -> letter identifierContent
 identifierContent -> digit identifierContent
 identifierContent -> _ identifierContent
-identifierContent -> epsilon
+identifierContent -> ε
 identifier -> identifierStart identifierContent
 digitList -> digit digitList
-digitList -> epsilon
+digitList -> ε
 number -> digit
 positiveNumber -> nonZeroDigit digitList
 positiveNumber -> + nonZeroDigit digitList
@@ -76,7 +76,7 @@ terminal -> artihmeticOperator
 terminal -> booleanOperator
 terminal -> relation
 terminalList -> terminal terminalList
-terminalList -> epsilon
+terminalList -> ε
 letter -> A
 letter -> B
 letter -> C
