@@ -131,10 +131,12 @@ public class Grammar {
                     result.add(EPSILON);
                 }
                 else {
+                    boolean allContainEpsilon = true;
                     for (Term resultingTerm : resultingTerms) {
                         Set<Terminal> localResult = getFirst(resultingTerm);
                         if (!localResult.contains(EPSILON)) {
                             result.addAll(localResult);
+                            allContainEpsilon = false;
                             break;
                         }
                         else {
@@ -143,7 +145,7 @@ public class Grammar {
                         }
                     }
 
-                    if (result.isEmpty()) {
+                    if (allContainEpsilon) {
                         result.add(EPSILON);
                     }
                 }
