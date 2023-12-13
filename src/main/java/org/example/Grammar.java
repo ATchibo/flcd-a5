@@ -141,7 +141,8 @@ public class Grammar {
 
                         if (resultingTerm instanceof NonTerminal t) {
                             if (t.equals(term)) {
-                                continue;
+                                allContainEpsilon = false;
+                                break;
                             }
                         }
 
@@ -197,15 +198,18 @@ public class Grammar {
                     if (term instanceof NonTerminal && term.equals(nonTerminal)) {
 
                         Set<Terminal> firstOfNext = getFirstOfNextTerms(resultingTerms.subList(i + 1, resultingTerms.size()));
+                        
+                        if (i == resultingTerms.size() - 1 || firstOfNext.contains(EPSILON)) {
+                            firstOfNext.remove(EPSILON);
+                            changed = result.addAll(firstOfNext) || changed;
 
-                        changed = result.addAll(firstOfNext) || changed;
-
-                        if (firstOfNext.contains(EPSILON)) {
                             NonTerminal sourceNonTerminal = production.getSourceNonTerminals().get(0);
                             if (!visitedNonTerminals.contains(sourceNonTerminal)) {
                                 Set<Terminal> followOfSource = getFollow(sourceNonTerminal, visitedNonTerminals);
                                 changed = result.addAll(followOfSource) || changed;
                             }
+                        } else {
+                            changed = result.addAll(firstOfNext) || changed;
                         }
                     }
                 }
@@ -220,7 +224,7 @@ public class Grammar {
         boolean allContainEpsilon = true;
 
         if (terms.isEmpty()) {
-            result.add(EPSILON);
+            return result;
         }
         else {
             for (Term term: terms) {
