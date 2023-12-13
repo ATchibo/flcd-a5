@@ -133,6 +133,14 @@ public class Grammar {
                 else {
                     boolean allContainEpsilon = true;
                     for (Term resultingTerm : resultingTerms) {
+
+                        if (resultingTerm instanceof NonTerminal) {
+                            NonTerminal t = (NonTerminal) resultingTerm;
+                            if (t.equals(term)) {
+                                continue;
+                            }
+                        }
+
                         Set<Terminal> localResult = getFirst(resultingTerm);
                         if (!localResult.contains(EPSILON)) {
                             result.addAll(localResult);
