@@ -13,7 +13,7 @@ public class UI {
     private Grammar grammar;
 
     public UI() {
-        grammar = new Grammar("g4.txt");
+        grammar = new Grammar("g6.txt");
         try {
             grammar.readGrammarFromFile();
             System.out.println("g1.txt loaded by default");
