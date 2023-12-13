@@ -27,12 +27,13 @@ public class Grammar {
 
 
     private final Terminal EPSILON = new Terminal("ε");
+    private final Terminal DOLLAR = new Terminal("$");
 
     public Grammar(String fileName) {
         this.filePath = "src/main/resources/" + fileName;
 
         this.nonTerminals = new HashSet<>();
-        this.terminals = new HashSet<>();
+        this.terminals = new HashSet<>(); terminals.add(EPSILON);
         this.productions = new ArrayList<>();
     }
 
@@ -166,10 +167,64 @@ public class Grammar {
         return result;
     }
 
-    public List<Terminal> getFollow(NonTerminal nonTerminal) {
-        List<Terminal> result = new ArrayList<>();
+    public Set<Terminal> getFollow(NonTerminal nonTerminal) {
+        Set<Terminal> result = new HashSet<>();
 
-        //yay
+        if (nonTerminal.equals(startingSymbol)) {
+            result.add(DOLLAR);
+        }
+
+        boolean changed;
+        do {
+            changed = false;
+
+            List<Production> productions = getProductionsOfNonTerminal(nonTerminal.getName());
+            for (Production production : productions) {
+                List<Term> resultingTerms = production.getResultingTerms();
+
+                for (int i = 0; i < resultingTerms.size(); i++) {
+                    Term term = resultingTerms.get(i);
+
+                    if (term instanceof NonTerminal && term.equals(nonTerminal)) {
+                        // A -> αBβ, add FIRST(β) to FOLLOW(B)
+                        Set<Terminal> firstOfNext = getFirstOfNextTerm(resultingTerms.subList(i + 1, resultingTerms.size()));
+                        if (result.addAll(firstOfNext)) {
+                            changed = true;
+                        }
+
+                        // If β is nullable, add FOLLOW(A) to FOLLOW(B)
+                        if (firstOfNext.contains(EPSILON) && !production.getSourceNonTerminals().contains(nonTerminal)) {
+                            Set<Terminal> followOfSource = getFollow(production.getSourceNonTerminals().getFirst());
+                            if (result.addAll(followOfSource)) {
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } while (changed);
+
+        return result;
+    }
+
+    private Set<Terminal> getFirstOfNextTerm(List<Term> terms) {
+        Set<Terminal> result = new HashSet<>();
+
+        if (terms.isEmpty()) {
+            result.add(EPSILON);
+        }
+        else {
+            Term term = terms.get(0);
+            if (term instanceof Terminal) {
+                result.add((Terminal)term);
+            }
+            else if (term instanceof NonTerminal) {
+                result.addAll(getFirst(term));
+            }
+            else {
+                throw new RuntimeException("getFirstOfNextTerm accepts Terminal or NonTerminal classes only");
+            }
+        }
 
         return result;
     }
