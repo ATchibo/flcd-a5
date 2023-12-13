@@ -7,23 +7,22 @@ import org.example.domain.Terminal;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class Grammar {
 
-    private String filePath;
+    private final String filePath;
 
-    private Set<NonTerminal> nonTerminals;
-    private Set<Terminal> terminals;
+    private final Set<NonTerminal> nonTerminals;
+    private final Set<Terminal> terminals;
     private NonTerminal startingSymbol;
-    private List<Production> productions;
+    private final List<Production> productions;
 
 
     private final Terminal EPSILON = new Terminal("ε");
@@ -33,7 +32,7 @@ public class Grammar {
         this.filePath = "src/main/resources/" + fileName;
 
         this.nonTerminals = new HashSet<>();
-        this.terminals = new HashSet<>(); terminals.add(EPSILON);
+        this.terminals = new HashSet<>();
         this.productions = new ArrayList<>();
     }
 
@@ -43,19 +42,24 @@ public class Grammar {
 
         String line = reader.readLine();
 
-        String[] nonTerminals = line.split(" ");
-        for (String nonTerminal: nonTerminals)
+        List<String> _nonTerminals = List.of(line.split(" "));
+        this.nonTerminals.clear();
+        for (String nonTerminal: _nonTerminals)
             this.nonTerminals.add(new NonTerminal(nonTerminal));
 
         line = reader.readLine();
 
-        String[] terminals = line.split(" ");
-        for (String terminal: terminals)
+        List<String> _terminals = List.of(line.split(" "));
+        this.terminals.clear();
+        for (String terminal: _terminals)
             this.terminals.add(new Terminal(terminal));
+        this.terminals.add(EPSILON);
 
         line = reader.readLine();
 
         this.startingSymbol = new NonTerminal(line);
+
+        this.productions.clear();
 
         line = reader.readLine();
 
@@ -75,9 +79,9 @@ public class Grammar {
             List<Term> resultingTermsList = new ArrayList<>();
 
             for (String resultingTerm: resultingTerms)
-                if (Arrays.asList(nonTerminals).contains(resultingTerm))
+                if (_nonTerminals.contains(resultingTerm))
                     resultingTermsList.add(new NonTerminal(resultingTerm));
-                else if (Arrays.asList(terminals).contains(resultingTerm))
+                else if (Objects.equals(resultingTerm, "ε") || _terminals.contains(resultingTerm))
                     resultingTermsList.add(new Terminal(resultingTerm));
                 else throw new RuntimeException("Invalid grammar: term " + resultingTerm + " not found");
 
@@ -135,8 +139,7 @@ public class Grammar {
                     boolean allContainEpsilon = true;
                     for (Term resultingTerm : resultingTerms) {
 
-                        if (resultingTerm instanceof NonTerminal) {
-                            NonTerminal t = (NonTerminal) resultingTerm;
+                        if (resultingTerm instanceof NonTerminal t) {
                             if (t.equals(term)) {
                                 continue;
                             }
@@ -168,37 +171,89 @@ public class Grammar {
     }
 
     public Set<Terminal> getFollow(NonTerminal nonTerminal) {
+//        Set<Terminal> result = getFollow(nonTerminal, new HashSet<>());
+//        if (!nonTerminal.equals(startingSymbol))
+//            result.remove(DOLLAR);
+//        return result;
+        return getFollow(nonTerminal, new HashSet<>());
+    }
+
+    public Set<Terminal> getFollow(NonTerminal nonTerminal, Set<NonTerminal> visitedNonTerminals) {
+        visitedNonTerminals.add(nonTerminal);
+
         Set<Terminal> result = new HashSet<>();
 
+        // Add $ to FOLLOW(nonTerminal) if nonTerminal is the starting symbol
         if (nonTerminal.equals(startingSymbol)) {
             result.add(DOLLAR);
+//            return result;
         }
 
         boolean changed;
         do {
             changed = false;
 
-            List<Production> productions = getProductionsOfNonTerminal(nonTerminal.getName());
             for (Production production : productions) {
                 List<Term> resultingTerms = production.getResultingTerms();
 
                 for (int i = 0; i < resultingTerms.size(); i++) {
                     Term term = resultingTerms.get(i);
 
+                    // we are looking for the current nonTerminal in the resulting terms
                     if (term instanceof NonTerminal && term.equals(nonTerminal)) {
-                        // A -> αBβ, add FIRST(β) to FOLLOW(B)
-                        Set<Terminal> firstOfNext = getFirstOfNextTerm(resultingTerms.subList(i + 1, resultingTerms.size()));
-                        if (result.addAll(firstOfNext)) {
-                            changed = true;
-                        }
 
-                        // If β is nullable, add FOLLOW(A) to FOLLOW(B)
-                        if (firstOfNext.contains(EPSILON) && !production.getSourceNonTerminals().contains(nonTerminal)) {
-                            Set<Terminal> followOfSource = getFollow(production.getSourceNonTerminals().getFirst());
-                            if (result.addAll(followOfSource)) {
+                        if (i < resultingTerms.size() - 1) {
+                            // we have A -> αBβ
+
+                            Set<Terminal> firstOfNext = getFirstOfNextTerms(resultingTerms.subList(i + 1, resultingTerms.size()));
+
+                            if (firstOfNext.remove(EPSILON)) {
+                                // if Epsilon is in FIRST(β)
+                                // add FOLLOW(A) to FOLLOW(B)
+                                NonTerminal currentSourceNonTerminal = production.getSourceNonTerminals().getFirst();
+                                if (!visitedNonTerminals.contains(currentSourceNonTerminal)) {
+                                    Set<Terminal> followOfCurrentSourceNonTerminal = getFollow(currentSourceNonTerminal, visitedNonTerminals);
+                                    if (result.addAll(followOfCurrentSourceNonTerminal)) {
+                                        changed = true;
+                                    }
+                                }
+                            }
+
+                            // add {FIRST(β) - Epsilon } to FOLLOW(B)
+                            if (result.addAll(firstOfNext)) {
                                 changed = true;
                             }
+
+                        } else {
+                            // we have A -> αB
+                            // add FOLLOW(A) to FOLLOW(B)
+                            NonTerminal currentSourceNonTerminal = production.getSourceNonTerminals().getFirst();
+                            if (!visitedNonTerminals.contains(currentSourceNonTerminal)) {
+                                Set<Terminal> followOfCurrentSourceNonTerminal = getFollow(currentSourceNonTerminal, visitedNonTerminals);
+                                if (result.addAll(followOfCurrentSourceNonTerminal)) {
+                                    changed = true;
+                                }
+                            }
                         }
+
+                        // A -> αBβ
+                        // add {FIRST(β) - Epsilon } to FOLLOW(B)
+                        // add FOLLOW(A) to FOLLOW(B)
+
+//                        Set<Terminal> firstOfNext = getFirstOfNextTerm(resultingTerms.subList(i + 1, resultingTerms.size()));
+//                        firstOfNext.remove(EPSILON);
+//
+//                        if (result.addAll(firstOfNext)) {
+//                            changed = true;
+//                        }
+//
+//                        NonTerminal currentSourceNonTerminal = production.getSourceNonTerminals().getFirst();
+//                        if (!visitedNonTerminals.contains(currentSourceNonTerminal)) {
+//                            Set<Terminal> followOfCurrentSourceNonTerminal = getFollow(currentSourceNonTerminal, visitedNonTerminals);
+//                            if (result.addAll(followOfCurrentSourceNonTerminal)) {
+//                                changed = true;
+//                            }
+//                        }
                     }
                 }
             }
@@ -207,22 +262,15 @@ public class Grammar {
         return result;
     }
 
-    private Set<Terminal> getFirstOfNextTerm(List<Term> terms) {
+    private Set<Terminal> getFirstOfNextTerms(List<Term> terms) {
         Set<Terminal> result = new HashSet<>();
 
         if (terms.isEmpty()) {
             result.add(EPSILON);
         }
         else {
-            Term term = terms.get(0);
-            if (term instanceof Terminal) {
-                result.add((Terminal)term);
-            }
-            else if (term instanceof NonTerminal) {
+            for (Term term: terms) {
                 result.addAll(getFirst(term));
-            }
-            else {
-                throw new RuntimeException("getFirstOfNextTerm accepts Terminal or NonTerminal classes only");
             }
         }
 
