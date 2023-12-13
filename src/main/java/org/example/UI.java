@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.domain.NonTerminal;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
@@ -31,6 +33,7 @@ public class UI {
             System.out.println("5. Print productions");
             System.out.println("6. Print productions of a given non-terminal");
             System.out.println("7. Check if grammar is CFG");
+            System.out.println("8. Print FIRST for a given non-terminal");
 
             Scanner scanner = new Scanner(System.in);
             int command = scanner.nextInt();
@@ -64,13 +67,26 @@ public class UI {
                 case 5:
                     System.out.println(grammar.getProductions());
                     break;
-                case 6:
+                case 6: {
                     System.out.println("Enter non-terminal: ");
                     String nonTerminal = scanner.next();
                     System.out.println(grammar.getProductionsOfNonTerminal(nonTerminal));
+                }
                     break;
                 case 7:
                     System.out.println(grammar.isContextFreeGrammar());
+                    break;
+                case 8: {
+                    System.out.println("Enter non-terminal: ");
+                    String nonTerminalName = scanner.next();
+                    NonTerminal nonTerminal = grammar.getNonTerminalFromString(nonTerminalName);
+                    if (nonTerminal == null) {
+                        System.out.println("Non-terminal " + nonTerminalName + " not found in the current grammar");
+                    }
+                    else {
+                        System.out.println(grammar.getFirst(nonTerminal));
+                    }
+                }
                     break;
                 default:
                     System.out.println("Invalid command");

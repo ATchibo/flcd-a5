@@ -100,6 +100,15 @@ public class Grammar {
         return result;
     }
 
+    public NonTerminal getNonTerminalFromString(String nonTerminalName) {
+        for (NonTerminal nonTerminal : nonTerminals) {
+            if (nonTerminal.getName().equals(nonTerminalName)) {
+                return nonTerminal;
+            }
+        }
+        return null;
+    }
+
 
     public boolean isContextFreeGrammar() {
         return productions.stream()
@@ -107,8 +116,52 @@ public class Grammar {
                 .allMatch(nonterminals -> nonterminals.size() == 1);
     }
 
-    public List<Terminal> getFirst(NonTerminal nonTerminal) {
-        List<Terminal> result = new ArrayList<>();
+    // should be used only for cfg grammars
+    public Set<Terminal> getFirst(Term term) {
+        Set<Terminal> result = new HashSet<>();
+
+        if (term instanceof Terminal) {
+            result.add((Terminal)term);
+        }
+        else if (term instanceof NonTerminal) {
+            List<Production> productions = getProductionsOfNonTerminal(term.getName());
+            for (Production production : productions) {
+                List<Term> resultingTerms = production.getResultingTerms();
+                if (resultingTerms.size() == 1 && resultingTerms.getFirst().equals(EPSILON)) {
+                    result.add(EPSILON);
+                }
+                else {
+                    boolean allContainEpsilon = true;
+                    for (Term resultingTerm : resultingTerms) {
+
+                        if (resultingTerm instanceof NonTerminal) {
+                            NonTerminal t = (NonTerminal) resultingTerm;
+                            if (t.equals(term)) {
+                                continue;
+                            }
+                        }
+
+                        Set<Terminal> localResult = getFirst(resultingTerm);
+                        if (!localResult.contains(EPSILON)) {
+                            result.addAll(localResult);
+                            allContainEpsilon = false;
+                            break;
+                        }
+                        else {
+                            localResult.remove(EPSILON);
+                            result.addAll(localResult);
+                        }
+                    }
+
+                    if (allContainEpsilon) {
+                        result.add(EPSILON);
+                    }
+                }
+            }
+        }
+        else {
+            throw new RuntimeException("getFirst accepts Terminal or NonTerminal classes only");
+        }
 
         return result;
     }
