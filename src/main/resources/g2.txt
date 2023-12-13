@@ -72,7 +72,7 @@ number -> positiveNumber
 stringTerminal -> " terminalList "
 terminal -> letter
 terminal -> digit
-terminal -> artihmeticOperator
+terminal -> arithmeticOperator
 terminal -> booleanOperator
 terminal -> relation
 terminalList -> terminal terminalList
