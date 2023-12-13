@@ -231,6 +231,9 @@ public class Grammar {
                 Set<Terminal> first = getFirst(term);
                 result.addAll(first);
                 allContainEpsilon = allContainEpsilon && first.contains(EPSILON);
+                if (!allContainEpsilon) {
+                    break;
+                }
             }
         }
 

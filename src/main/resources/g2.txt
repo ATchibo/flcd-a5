@@ -1,4 +1,4 @@
-ε program declarationList declaration identifierList primitiveType arrayDeclaration type statement assignStatement inputOutputStatement conditionalStructStatement ifSimpleStatement ifStatement elseStatementChain whileStatement condition conditionList relation expressionNumber expression mathExpression arithmeticOperator booleanOperator identifierStart identifierContent identifier digitList number positiveNumber number letter digit nonZeroDigit stringTerminal terminal terminalList
+ε program declarationList declaration identifierList primitiveType arrayDeclaration type statement assignStatement inputOutputStatement conditionalStructStatement ifSimpleStatement ifStatement elseStatementChain whileStatement condition conditionList relation expressionNumber expression mathExpression arithmeticOperator booleanOperator identifierStart identifierContent identifier digitList number positiveNumber number letter digit nonZeroDigit charTerminal terminal terminalList
 + - * / =: " < <= = > >= && || ! != [ ] : , ( ) ' bool char int float string while if else end read print def ret for true false a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 _
 program
 program -> statement program
@@ -44,7 +44,7 @@ relation -> >
 expressionNumber -> identifier
 expressionNumber -> number
 expression -> expressionNumber
-expression -> stringTerminal
+expression -> charTerminal
 expression -> mathExpression
 mathExpression -> expressionNumber
 arithmeticOperator -> +
@@ -69,14 +69,13 @@ positiveNumber -> nonZeroDigit digitList
 positiveNumber -> + nonZeroDigit digitList
 number -> - nonZeroDigit digitList
 number -> positiveNumber
-stringTerminal -> " terminalList "
+charTerminal -> " terminal "
 terminal -> letter
 terminal -> digit
 terminal -> arithmeticOperator
 terminal -> booleanOperator
 terminal -> relation
-terminalList -> terminal terminalList
-terminalList -> ε
+terminal -> ε
 letter -> A
 letter -> B
 letter -> C

@@ -13,10 +13,10 @@ public class UI {
     private Grammar grammar;
 
     public UI() {
-        grammar = new Grammar("g6.txt");
+        grammar = new Grammar("g3.txt");
         try {
             grammar.readGrammarFromFile();
-            System.out.println("g1.txt loaded by default");
+            System.out.println("g3.txt loaded by default");
         } catch (Exception e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
