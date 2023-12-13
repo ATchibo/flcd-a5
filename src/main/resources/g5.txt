@@ -1,0 +1,14 @@
+S E D F Y
+a b c d x
+S
+S -> b E x
+S -> D b
+S -> b
+S -> F
+D -> E D c
+D -> Y
+E -> d E D
+E -> d D Y
+Y -> a b
+Y -> a D x
+Y -> ε

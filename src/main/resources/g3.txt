@@ -1,0 +1,11 @@
+E T G U F
+* + ( id )
+E
+E -> T G
+G -> + T G
+G -> ε
+T -> F U
+U -> * F U
+U -> ε
+F -> ( E )
+F -> id

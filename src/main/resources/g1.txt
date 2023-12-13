@@ -2,5 +2,5 @@ S A
 a b c
 S
 S -> a A
-A -> b A
+A -> b A a
 A -> c
