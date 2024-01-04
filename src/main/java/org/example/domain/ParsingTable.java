@@ -63,6 +63,15 @@ public class ParsingTable {
         for (Term term : parsingTableMap.keySet())
             table.put(i++, 0, Cell.of(term.toString()));
 
+        i = 1;
+        for (Term rowTerm : parsingTableMap.keySet()) {
+            int col = 1;
+            for (String colTerminalValue : parsingTableMap.get(rowTerm).values()) {
+                table.put(i, col++, Cell.of(colTerminalValue));
+            }
+            i++;
+        }
+
         table = Border.SINGLE_LINE.apply(table);
 
         return table;
