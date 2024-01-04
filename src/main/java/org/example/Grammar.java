@@ -25,9 +25,8 @@ public class Grammar {
     private NonTerminal startingSymbol;
     private final List<Production> productions;
 
-
-    private final Terminal EPSILON = new Terminal("ε");
-    private final Terminal DOLLAR = new Terminal("$");
+    public static final Terminal EPSILON = new Terminal("ε");
+    public static final Terminal DOLLAR = new Terminal("$");
 
     public Grammar(String fileName) {
         this.filePath = "src/main/resources/" + fileName;
@@ -248,9 +247,7 @@ public class Grammar {
     }
 
     public ParsingTable getLL1ParsingTable() {
-        ParsingTable parsingTable = new ParsingTable(terminals, nonTerminals);
-
-        return parsingTable;
+        return new ParsingTable(this);
     }
 
     public Set<NonTerminal> getNonTerminals() {
