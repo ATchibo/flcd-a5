@@ -6,6 +6,7 @@ import com.inamik.text.tables.grid.Border;
 import org.example.Grammar;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,28 @@ public class ParsingTable {
                 }
                 parsingTableMap.get(rowTerminal).put(columnTerminal, toAdd);
             }
+        }
+
+        int i = 1;
+        for (Production production : grammar.getProductions()) {
+            NonTerminal sourceNonTerminal = production.getSourceNonTerminals().getFirst();
+            String toAdd = production.getResultingTerms().stream()
+                    .map(Term::toString)
+                    .reduce("", (a, b) -> a + " " + b);
+            toAdd += "," + i;
+            Set<Terminal> resultOfFirst = new HashSet<>();
+            grammar.computeFirstForProduction(production, sourceNonTerminal, resultOfFirst);
+
+            for (Terminal terminal : resultOfFirst) {
+                if (!terminal.equals(Grammar.EPSILON)) {
+                    parsingTableMap.get(sourceNonTerminal).put(terminal, toAdd);
+                }
+                else {
+                    parsingTableMap.get(sourceNonTerminal).put(Grammar.DOLLAR, toAdd);
+                }
+            }
+
+            i++;
         }
     }
 
