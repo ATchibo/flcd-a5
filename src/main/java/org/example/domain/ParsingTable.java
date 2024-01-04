@@ -52,7 +52,7 @@ public class ParsingTable {
             NonTerminal sourceNonTerminal = production.getSourceNonTerminals().getFirst();
             String toAdd = production.getResultingTerms().stream()
                     .map(Term::toString)
-                    .reduce("", (a, b) -> a + " " + b);
+                    .reduce("", (a, b) -> a + b);
             toAdd += "," + i;
             Set<Terminal> resultOfFirst = new HashSet<>();
             grammar.computeFirstForProduction(production, sourceNonTerminal, resultOfFirst);

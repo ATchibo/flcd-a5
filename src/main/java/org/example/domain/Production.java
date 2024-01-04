@@ -31,10 +31,10 @@ public class Production {
         StringBuilder sb = new StringBuilder();
 
         for (NonTerminal t: sourceNonTerminals)
-            sb.append(t).append(" ");
-        sb.append("-> ");
+            sb.append(t);
+        sb.append(" -> ");
         for (Term t: resultingTerms)
-            sb.append(t).append(" ");
+            sb.append(t);
 
         return sb.toString();
     }
