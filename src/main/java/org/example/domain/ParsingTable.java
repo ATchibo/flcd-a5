@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ParsingTable {
 
     private Grammar grammar;
-    private HashMap<Pair<Term, Term>, String> parsingTableMap;
+    private HashMap<Term, HashMap<Terminal, String>> parsingTableMap;
 
     public ParsingTable(Grammar grammar) {
         this.grammar = grammar;
@@ -21,36 +21,47 @@ public class ParsingTable {
     }
 
     private void computeParsingTable() {
-        Set<Term> terms = grammar.getTerminalsAndNonTerminals();
-        terms.remove(Grammar.EPSILON);
-        for (Term term : terms) {
-            parsingTableMap.put(new Pair<>(term, term), "pop");
+        Set<NonTerminal> nonTerminals = grammar.getNonTerminals();
+        Set<Terminal> terminals = grammar.getTerminals();
+        terminals.remove(Grammar.EPSILON);
+        terminals.add(Grammar.DOLLAR);
+
+        for (NonTerminal nonTerminal : nonTerminals) {
+            parsingTableMap.put(nonTerminal, new HashMap<>());
+
+            for (Terminal terminal : terminals) {
+                parsingTableMap.get(nonTerminal).put(terminal, "");
+            }
         }
-        parsingTableMap.put(new Pair<>(Grammar.DOLLAR, Grammar.DOLLAR), "accept");
+
+        for (Terminal rowTerminal : terminals) {
+            parsingTableMap.put(rowTerminal, new HashMap<>());
+
+            for (Terminal columnTerminal : terminals) {
+                String toAdd = "";
+                if (rowTerminal == columnTerminal) {
+                    toAdd = (rowTerminal == Grammar.DOLLAR ? "accept" : "pop");
+                }
+                parsingTableMap.get(rowTerminal).put(columnTerminal, toAdd);
+            }
+        }
     }
 
     public GridTable getTable() {
-        Set<Terminal> terminals = grammar.getTerminals();
-        terminals.remove(Grammar.EPSILON);
-        Set<NonTerminal> nonTerminals = grammar.getNonTerminals();
-
         GridTable table = new GridTable(
-                terminals.size() + nonTerminals.size() + 2,
-                terminals.size() + 2);
+                parsingTableMap.size() + 1,
+                parsingTableMap.get(Grammar.DOLLAR).size() + 1);
+        // dollar is chosen as random, just want to know the size of cols
 
         table.put(0, 0, Cell.of(""));
 
         int i = 1;
-        for (Terminal terminal: terminals)
+        for (Terminal terminal: parsingTableMap.get(Grammar.DOLLAR).keySet())
             table.put(0, i++, Cell.of(terminal.toString()));
-        table.put(0, i, Cell.of(Grammar.DOLLAR.toString()));
 
         i = 1;
-        for (NonTerminal nonTerminal: nonTerminals)
-            table.put(i++, 0, Cell.of(nonTerminal.toString()));
-        for (Terminal terminal: terminals)
-            table.put(i++, 0, Cell.of(terminal.toString()));
-        table.put(i, 0, Cell.of(Grammar.DOLLAR.toString()));
+        for (Term term : parsingTableMap.keySet())
+            table.put(i++, 0, Cell.of(term.toString()));
 
         table = Border.SINGLE_LINE.apply(table);
 
