@@ -1,5 +1,7 @@
 package org.example;
 
+import com.inamik.text.tables.GridTable;
+import com.inamik.text.tables.grid.Util;
 import org.example.domain.NonTerminal;
 
 import java.io.FileNotFoundException;
@@ -35,6 +37,7 @@ public class UI {
             System.out.println("7. Check if grammar is CFG");
             System.out.println("8. Print FIRST for a given non-terminal");
             System.out.println("9. Print FOLLOW for a given non-terminal");
+            System.out.println("10. Print LL(1) parsing table");
 
             Scanner scanner = new Scanner(System.in);
             int command = scanner.nextInt();
@@ -72,8 +75,8 @@ public class UI {
                     System.out.println("Enter non-terminal: ");
                     String nonTerminal = scanner.next();
                     System.out.println(grammar.getProductionsOfNonTerminal(nonTerminal));
-                }
                     break;
+                }
                 case 7:
                     System.out.println(grammar.isContextFreeGrammar());
                     break;
@@ -98,6 +101,11 @@ public class UI {
                     else {
                         System.out.println(grammar.getFollow(nonTerminal2));
                     }
+                    break;
+                case 10:
+                    GridTable table = grammar.getLL1ParsingTable().getTable();
+                    Util.print(table);
+
                     break;
                 default:
                     System.out.println("Invalid command");

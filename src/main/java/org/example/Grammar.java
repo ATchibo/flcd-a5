@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.domain.NonTerminal;
+import org.example.domain.ParsingTable;
 import org.example.domain.Production;
 import org.example.domain.Term;
 import org.example.domain.Terminal;
@@ -242,6 +243,11 @@ public class Grammar {
         return result;
     }
 
+    public ParsingTable getLL1ParsingTable() {
+        ParsingTable parsingTable = new ParsingTable(terminals, nonTerminals);
+
+        return parsingTable;
+    }
 
     public Set<NonTerminal> getNonTerminals() {
         return this.nonTerminals;
