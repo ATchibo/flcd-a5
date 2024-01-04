@@ -41,7 +41,7 @@ public class ParsingTable {
             for (Terminal columnTerminal : terminals) {
                 String toAdd = "";
                 if (rowTerminal == columnTerminal) {
-                    toAdd = (rowTerminal == Grammar.DOLLAR ? "accept" : "pop");
+                    toAdd = (rowTerminal == Grammar.DOLLAR ? "acc" : "pop");
                 }
                 parsingTableMap.get(rowTerminal).put(columnTerminal, toAdd);
             }
@@ -57,7 +57,12 @@ public class ParsingTable {
             Set<Terminal> resultOfFirst = new HashSet<>();
             grammar.computeFirstForProduction(production, sourceNonTerminal, resultOfFirst);
 
-            for (Terminal terminal : resultOfFirst) {
+            Set<Terminal> targetTerminals = resultOfFirst;
+            if (resultOfFirst.contains(Grammar.EPSILON)) {
+                targetTerminals = grammar.getFollow(sourceNonTerminal);
+            }
+
+            for (Terminal terminal : targetTerminals) {
                 if (!terminal.equals(Grammar.EPSILON)) {
                     parsingTableMap.get(sourceNonTerminal).put(terminal, toAdd);
                 }

@@ -179,7 +179,7 @@ public class Grammar {
         return getFollow(nonTerminal, new HashSet<>());
     }
 
-    public Set<Terminal> getFollow(NonTerminal nonTerminal, Set<NonTerminal> visitedNonTerminals) {
+    private Set<Terminal> getFollow(NonTerminal nonTerminal, Set<NonTerminal> visitedNonTerminals) {
         visitedNonTerminals.add(nonTerminal);
 
         Set<Terminal> result = new HashSet<>();
@@ -234,7 +234,7 @@ public class Grammar {
             for (Term term: terms) {
                 Set<Terminal> first = getFirst(term);
                 result.addAll(first);
-                allContainEpsilon = allContainEpsilon && first.contains(EPSILON);
+                allContainEpsilon = first.contains(EPSILON);
                 if (!allContainEpsilon) {
                     break;
                 }
@@ -245,6 +245,54 @@ public class Grammar {
             result.remove(EPSILON);
         return result;
     }
+
+//    public Set<Terminal> computeFollowForProduction(Production production) {
+//        return computeFollowForProduction(production.getSourceNonTerminals().getFirst(), production, new HashSet<>());
+//    }
+//
+//    private Set<Terminal> computeFollowForProduction(NonTerminal nonTerminal, Production production, Set<NonTerminal> visitedNonTerminals) {
+//        visitedNonTerminals.add(nonTerminal);
+//
+//        Set<Terminal> result = new HashSet<>();
+//
+//        if (nonTerminal.equals(startingSymbol)) {
+//            result.add(EPSILON);
+//        }
+//
+//        boolean changed;
+//        do {
+//            changed = false;
+//
+//                List<Term> resultingTerms = production.getResultingTerms();
+//
+//                for (int i = 0; i < resultingTerms.size(); i++) {
+//                    Term term = resultingTerms.get(i);
+//
+//                    // we are looking for the current nonTerminal in the resulting terms
+//                    if (term instanceof NonTerminal && term.equals(nonTerminal)) {
+//
+//                        Set<Terminal> firstOfNext = getFirstOfNextTerms(resultingTerms.subList(i + 1, resultingTerms.size()));
+//
+//                        if (i == resultingTerms.size() - 1 || firstOfNext.contains(EPSILON)) {
+//                            firstOfNext.remove(EPSILON);
+//                            changed = result.addAll(firstOfNext) || changed;
+//
+//                            NonTerminal sourceNonTerminal = production.getSourceNonTerminals().get(0);
+//                            if (!visitedNonTerminals.contains(sourceNonTerminal)) {
+//                                Set<Terminal> followOfSource = getFollow(sourceNonTerminal, visitedNonTerminals);
+//                                changed = result.addAll(followOfSource) || changed;
+//                            }
+//                        } else {
+//                            changed = result.addAll(firstOfNext) || changed;
+//                        }
+//                    }
+//                }
+//            }
+//        } while (changed);
+//
+//        return result;
+//    }
+
 
     public ParsingTable getLL1ParsingTable() {
         return new ParsingTable(this);
