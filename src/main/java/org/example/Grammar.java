@@ -266,6 +266,12 @@ public class Grammar {
         return terminals;
     }
 
+    public Set<Term> getTerminalsAndNonTerminals() {
+        Set<Term> terms = new HashSet<>(nonTerminals);
+        terms.addAll(terminals);
+        return terms;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

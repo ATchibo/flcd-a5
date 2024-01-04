@@ -12,21 +12,26 @@ import java.util.stream.Collectors;
 public class ParsingTable {
 
     private Grammar grammar;
-    private HashMap<Term, Term> parsingTableMap;
+    private HashMap<Pair<Term, Term>, String> parsingTableMap;
 
     public ParsingTable(Grammar grammar) {
         this.grammar = grammar;
+        parsingTableMap = new HashMap<>();
         computeParsingTable();
     }
 
     private void computeParsingTable() {
-    
+        Set<Term> terms = grammar.getTerminalsAndNonTerminals();
+        terms.remove(Grammar.EPSILON);
+        for (Term term : terms) {
+            parsingTableMap.put(new Pair<>(term, term), "pop");
+        }
+        parsingTableMap.put(new Pair<>(Grammar.DOLLAR, Grammar.DOLLAR), "accept");
     }
 
     public GridTable getTable() {
-        Set<Terminal> terminals = grammar.getTerminals().stream()
-                .filter(terminal -> terminal != Grammar.EPSILON)
-                .collect(Collectors.toSet());
+        Set<Terminal> terminals = grammar.getTerminals();
+        terminals.remove(Grammar.EPSILON);
         Set<NonTerminal> nonTerminals = grammar.getNonTerminals();
 
         GridTable table = new GridTable(
