@@ -132,37 +132,7 @@ public class Grammar {
         else if (term instanceof NonTerminal) {
             List<Production> productions = getProductionsOfNonTerminal(term.getName());
             for (Production production : productions) {
-                List<Term> resultingTerms = production.getResultingTerms();
-                if (resultingTerms.size() == 1 && resultingTerms.getFirst().equals(EPSILON)) {
-                    result.add(EPSILON);
-                }
-                else {
-                    boolean allContainEpsilon = true;
-                    for (Term resultingTerm : resultingTerms) {
-
-                        if (resultingTerm instanceof NonTerminal t) {
-                            if (t.equals(term)) {
-                                allContainEpsilon = false;
-                                break;
-                            }
-                        }
-
-                        Set<Terminal> localResult = getFirst(resultingTerm);
-                        if (!localResult.contains(EPSILON)) {
-                            result.addAll(localResult);
-                            allContainEpsilon = false;
-                            break;
-                        }
-                        else {
-                            localResult.remove(EPSILON);
-                            result.addAll(localResult);
-                        }
-                    }
-
-                    if (allContainEpsilon) {
-                        result.add(EPSILON);
-                    }
-                }
+                computeFirstForProduction(production, term, result);
             }
         }
         else {
@@ -170,6 +140,40 @@ public class Grammar {
         }
 
         return result;
+    }
+
+    public void computeFirstForProduction(Production production, Term term, Set<Terminal> result) {
+        List<Term> resultingTerms = production.getResultingTerms();
+        if (resultingTerms.size() == 1 && resultingTerms.getFirst().equals(EPSILON)) {
+            result.add(EPSILON);
+        }
+        else {
+            boolean allContainEpsilon = true;
+            for (Term resultingTerm : resultingTerms) {
+
+                if (resultingTerm instanceof NonTerminal t) {
+                    if (t.equals(term)) {
+                        allContainEpsilon = false;
+                        break;
+                    }
+                }
+
+                Set<Terminal> localResult = getFirst(resultingTerm);
+                if (!localResult.contains(EPSILON)) {
+                    result.addAll(localResult);
+                    allContainEpsilon = false;
+                    break;
+                }
+                else {
+                    localResult.remove(EPSILON);
+                    result.addAll(localResult);
+                }
+            }
+
+            if (allContainEpsilon) {
+                result.add(EPSILON);
+            }
+        }
     }
 
     public Set<Terminal> getFollow(NonTerminal nonTerminal) {
