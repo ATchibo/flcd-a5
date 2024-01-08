@@ -14,10 +14,12 @@ public class ParsingTable {
 
     private Grammar grammar;
     private HashMap<Term, HashMap<Terminal, String>> parsingTableMap;
+    private HashMap<Term, HashMap<Terminal, String>> conflictMap;
 
     public ParsingTable(Grammar grammar) {
         this.grammar = grammar;
         parsingTableMap = new HashMap<>();
+        conflictMap = new HashMap<>();
         computeParsingTable();
     }
 
@@ -63,6 +65,15 @@ public class ParsingTable {
             }
 
             for (Terminal terminal : targetTerminals) {
+                if (parsingTableMap.get(sourceNonTerminal).get(terminal) != null &&
+                        !parsingTableMap.get(sourceNonTerminal).get(terminal).isEmpty()) {
+
+                    if (!conflictMap.containsKey(sourceNonTerminal)) {
+                        conflictMap.put(sourceNonTerminal, new HashMap<>());
+                    }
+                    conflictMap.get(sourceNonTerminal).put(terminal, toAdd);
+                }
+
                 if (!terminal.equals(Grammar.EPSILON)) {
                     parsingTableMap.get(sourceNonTerminal).put(terminal, toAdd);
                 }
@@ -103,5 +114,19 @@ public class ParsingTable {
         table = Border.SINGLE_LINE.apply(table);
 
         return table;
+    }
+
+    public String getConflictsString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (Term nonTerminal : conflictMap.keySet()) {
+            sb.append("Non-terminal ").append(nonTerminal).append(" has conflicts on terminals: ");
+            sb.append(conflictMap.get(nonTerminal).keySet().stream()
+                    .map(Terminal::toString)
+                    .collect(Collectors.joining(", ")));
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 }

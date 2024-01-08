@@ -106,6 +106,9 @@ public class UI {
                     GridTable table = grammar.getLL1ParsingTable().getTable();
                     Util.print(table);
 
+                    String conflictsTable = grammar.getLL1ParsingTable().getConflictsString();
+                    System.out.println(conflictsTable);
+
                     break;
                 default:
                     System.out.println("Invalid command");
