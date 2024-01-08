@@ -8,6 +8,7 @@ import org.example.Grammar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class ParsingTable {
@@ -84,6 +85,68 @@ public class ParsingTable {
 
             i++;
         }
+    }
+
+    public void parse(String inputSequence) {
+
+        Stack<Terminal> inputStack = new Stack<>();
+        Stack<Term> workingStack = new Stack<>();
+        Stack<Integer> outputStack = new Stack<>();
+
+        inputStack.push(Grammar.DOLLAR);
+        String[] inputSequenceSplit = inputSequence.split(" ");
+        for (int i = inputSequenceSplit.length - 1; i >= 0; i--) {
+            inputStack.push(new Terminal(inputSequenceSplit[i]));
+        }
+
+        workingStack.push(Grammar.DOLLAR);
+        workingStack.push(grammar.getStartingSymbol());
+
+        while (!inputStack.isEmpty()) {
+            System.out.println("Input stack: " + inputStack);
+            System.out.println("Working stack: " + workingStack);
+            System.out.println("Output stack: " + outputStack);
+            System.out.println("--------------------\n");
+
+            while (workingStack.peek().equals(Grammar.EPSILON)) {
+                workingStack.pop();
+            }
+
+            Term top = workingStack.peek();
+            Terminal inputTop = inputStack.peek();
+            String productionString = parsingTableMap.get(top).get(inputTop);
+
+            if (productionString.equals("pop")) {
+                workingStack.pop();
+                inputStack.pop();
+            }
+            else {
+                if (productionString.isEmpty()) { // is error
+                    System.out.println("Input not accepted");
+                    return;
+                }
+                else if (productionString.equals("acc")) {
+                    System.out.println("Input accepted");
+
+                    System.out.println("Output stack:");
+                    System.out.println(outputStack);
+
+                    return;
+                }
+                else {
+                    String[] productionStringSplit = productionString.split(",");
+                    int productionIndex = Integer.parseInt(productionStringSplit[1]);
+                    Production production = grammar.getProductions().get(productionIndex - 1);
+                    workingStack.pop();
+                    for (int j = production.getResultingTerms().size() - 1; j >= 0; j--) {
+                        workingStack.push(production.getResultingTerms().get(j));
+                    }
+                    outputStack.push(productionIndex);
+                }
+            }
+        }
+
+        System.out.println("Input not accepted");
     }
 
     public GridTable getTable() {

@@ -38,6 +38,7 @@ public class UI {
             System.out.println("8. Print FIRST for a given non-terminal");
             System.out.println("9. Print FOLLOW for a given non-terminal");
             System.out.println("10. Print LL(1) parsing table");
+            System.out.println("11. Parse string using LL(1) parsing table");
 
             Scanner scanner = new Scanner(System.in);
             int command = scanner.nextInt();
@@ -108,6 +109,14 @@ public class UI {
 
                     String conflictsTable = grammar.getLL1ParsingTable().getConflictsString();
                     System.out.println(conflictsTable);
+
+                    break;
+                case 11:
+                    System.out.println("Enter string to parse: ");
+                    String stringToParse = scanner.nextLine();
+                    stringToParse = scanner.nextLine();
+
+                    grammar.getLL1ParsingTable().parse(stringToParse);
 
                     break;
                 default:
