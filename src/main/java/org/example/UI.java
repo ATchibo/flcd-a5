@@ -3,10 +3,13 @@ package org.example;
 import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.grid.Util;
 import org.example.domain.NonTerminal;
+import org.example.domain.ParsingTable;
+import org.example.domain.ParsingTree;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class UI {
 
@@ -116,9 +119,13 @@ public class UI {
                     String stringToParse = scanner.nextLine();
                     stringToParse = scanner.nextLine();
 
-                    grammar.getLL1ParsingTable().parse(stringToParse);
-
-                    break;
+                    ParsingTable parsingTable = grammar.getLL1ParsingTable();
+                    Stack<Integer> outputStack = parsingTable.parse(stringToParse);
+                    if (outputStack != null) {
+                        ParsingTree parsingTree = new ParsingTree(grammar, outputStack);
+                        parsingTree.generateTree();
+                    }
+                  break;
                 default:
                     System.out.println("Invalid command");
             }

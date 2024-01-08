@@ -87,7 +87,7 @@ public class ParsingTable {
         }
     }
 
-    public void parse(String inputSequence) {
+    public Stack<Integer> parse(String inputSequence) {
 
         Stack<Terminal> inputStack = new Stack<>();
         Stack<Term> workingStack = new Stack<>();
@@ -123,7 +123,7 @@ public class ParsingTable {
             else {
                 if (productionString.isEmpty()) { // is error
                     System.out.println("Input not accepted");
-                    return;
+                    return null;
                 }
                 else if (productionString.equals("acc")) {
                     System.out.println("Input accepted");
@@ -131,7 +131,7 @@ public class ParsingTable {
                     System.out.println("Output stack:");
                     System.out.println(outputStack);
 
-                    return;
+                    return outputStack;
                 }
                 else {
                     String[] productionStringSplit = productionString.split(",");
@@ -147,6 +147,7 @@ public class ParsingTable {
         }
 
         System.out.println("Input not accepted");
+        return null;
     }
 
     public GridTable getTable() {
